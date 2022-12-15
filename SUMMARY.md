@@ -3,6 +3,7 @@
 * [Work in Progress](README.md)
 * [Introduction](introduction.md)
 * [Shortcomings of existing blockchain name systems](shortcomings-of-existing-blockchain-name-systems.md)
+* [Vision #Draft](vision-draft.md)
 
 ## Architecture
 

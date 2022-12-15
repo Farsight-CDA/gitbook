@@ -23,6 +23,7 @@ This architecture uses a single blockchain to store **all** state data. Changes 
 | Looking up data is straightforward, all queries completed on one blockchain                         | Writing data from a spoke **always** requires GMP adding cost and delays |
 | <p>Everything can be done in a single roundtrip between Hub &#x26; Spoke chain<br>=> 2 messages</p> | Most actions will require the full roundtrip                             |
 | Battle tested and used in many projects                                                             | Not an innovation                                                        |
+|                                                                                                     | Hard time integrating with other name systems on other blockchains       |
 
 #### Simplified Query Algorithm
 
@@ -31,6 +32,29 @@ This architecture uses a single blockchain to store **all** state data. Changes 
    Entry is your result -> Exit\
    **b)** No entry is found\
    Name does not exist -> Exit
+
+### "Pull Out" Architecture
+
+Instead of the names being stored on just a single hub they can be pulled out onto other chains individually. Meaning that you can store records / ownership of names on other chains.
+
+This will not include sub-names though, those will individually need to be transferred out.
+
+| Pros                                               | Cons                                                                                    |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Mostly straightforward implementation              | Extendability on other chains (e.g. integrating other name systems) always requires GMP |
+| Trading & Record management does not involve GMP   | Managing sub-names will require 1-2 GMP messages                                        |
+| Reading records takes at most 2 blockchain lookups |                                                                                         |
+
+#### Simplified Query Algorithm
+
+1. Lookup the name on the hub chain\
+   **a)** **Entry is found**\
+   Entry is your result -> Exit\
+   **b) Link is found**\
+   ****Do 2.\
+   **c)** **No entry is found**\
+   Name does not exist -> Exit
+2. Lookup name on the chain the link points to. This will always point to a valid entry which is your result.
 
 ### Distributed Tree Architecture
 
@@ -44,12 +68,26 @@ The ownership of subdomains can be transferred to other GMP connected chains lea
 
 #### Simplified Query Algorithm
 
-1. Lookup the name on the hub chain\
-   **a)** Entry is found\
-   Entry is your result -> Exit\
-   **b)** No entry is found\
-   Go up one level and check again till you find an entry, then go to 2.
-2. If the name entry is a reference go to 3. otherwise the name does not exist
-3. Go back to step 1 but look on the referenced chain instead of the hub. \
-   Start with the full name again. Do not go further up than the name that you stopped when going up last time.
+Go down the tree level by level. This means you gotta split your name at the `.` first. \
+**(Continue here)** Every step you reappend one section to the queried name (right to left) till you are looking up the entire name again.
+
+Looking up a name goes as follows:
+
+1. Check registry on the current chain (Initially the Hub)
+2. **A: Entry (no link) is found:**\
+   ****If the current query is not yet the full name you are looking for than the name does not exist.\
+   Otherwise you just found the entry that you were looking for **-> Exit**\
+   **B: Link is found:**\
+   ****Set current chain to where link points **-> Continue**\
+   **C: No entry is found:**\
+   ****Name does not exist **-> Exit**\
+
+
+\=> Essentially just follow the links until you either reach the name you are looking for or a dead end\
+\
+
+
+
+
+
 
