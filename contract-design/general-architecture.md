@@ -2,7 +2,7 @@
 description: Potentially viable architectures for a cross-chain aware name system.
 ---
 
-# General Architecture
+# Architecture Choices
 
 All somewhat known name systems to date have been restricted to a single chain only which limited their architecture options.
 

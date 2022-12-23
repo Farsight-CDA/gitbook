@@ -14,5 +14,5 @@
 
 ## Contract Design
 
-* [Architecture Choices](contract-design/architecture-choices.md)
+* [Architecture Choices](contract-design/general-architecture.md)
 * [Why Distributed Tree?](contract-design/why-distributed-tree.md)
